@@ -14,7 +14,7 @@ namespace RoatpCompanyStructureExplorer.Storage
 
             Console.WriteLine("Loading providers...");
 
-            var providerdata = File.ReadAllLines(@"data\providers.txt");
+            var providerdata = File.ReadAllLines(@"data\provider.txt");
             Console.WriteLine($"{providerdata.Count()} providers loaded");
 
             var result = new List<RoatpProvider>();

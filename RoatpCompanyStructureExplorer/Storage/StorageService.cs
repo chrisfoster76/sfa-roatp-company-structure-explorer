@@ -20,7 +20,7 @@ namespace RoatpCompanyStructureExplorer.Storage
             _tableName = "ProviderCompany";
         }
 
-        public async Task StoreItem(CompanyRecord eventData)
+        private async Task InsertItem(CompanyRecord eventData)
         {
             var sql =
                 $"insert into [{_tableName}] (CompanyNumber, RootCompanyNumber, ParentCompanyNumber, CompanyName, ProfileData, PscData, OfficersData, Ukprn, FilingHistoryData) values (@CompanyNumber, @RootCompanyNumber, @ParentCompanyNumber, @CompanyName, @ProfileData, @PscData, @OfficersData, @Ukprn, @FilingHistoryData)";
@@ -38,8 +38,8 @@ namespace RoatpCompanyStructureExplorer.Storage
         public async Task UpdateItem(CompanyRecord eventData)
         {
             var sql =
-                $"update [{_tableName}] set FilingHistoryData = @FilingHistoryData where CompanyNumber = @CompanyNumber";
-            //$"update [{_tableName}] set OfficersData = @OfficersData, ProfileData = @ProfileData, PscData = @PscData, FilingHistoryData = @FilingHistoryData where CompanyNumber = @CompanyNumber";
+                //$"update [{_tableName}] set FilingHistoryData = @FilingHistoryData where CompanyNumber = @CompanyNumber";
+            $"update [{_tableName}] set OfficersData = @OfficersData, ProfileData = @ProfileData, PscData = @PscData, FilingHistoryData = @FilingHistoryData where CompanyNumber = @CompanyNumber";
 
             try
             {
@@ -49,6 +49,36 @@ namespace RoatpCompanyStructureExplorer.Storage
             {
                 Console.WriteLine($"Error {ex.Message}");
             }
+        }
+
+        public async Task Store(CompanyRecord companyRecord)
+        {
+            if (await Exists(companyRecord))
+            {
+                await UpdateItem(companyRecord);
+            }
+            else
+            {
+                await InsertItem(companyRecord);
+            }
+        }
+
+        private async Task<bool> Exists(CompanyRecord companyRecord)
+        {
+            var sql =
+                $"select 1 from [{_tableName}] where CompanyNumber = @CompanyNumber";
+
+            try
+            {
+                var result = await _sqlConnection.ExecuteScalarAsync<bool?>(sql, companyRecord);
+                return result.HasValue && result.Value;
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine($"Error {ex.Message}");
+            }
+
+            return false;
         }
 
         public void Dispose()
