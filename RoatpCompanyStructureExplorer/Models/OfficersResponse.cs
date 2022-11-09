@@ -45,7 +45,17 @@ namespace RoatpCompanyStructureExplorer.Models
             public string officer_role { get; set; }
             public string appointed_on { get; set; }
             public DateOfBirth date_of_birth { get; set; }
-            public string resigned_on { get; set; }
+            public DateTime? resigned_on { get; set; }
+            public Identification identification { get; set; }
+        }
+
+        public class Identification
+        {
+            public string legal_form { get; set; }
+            public string place_registered { get; set; }
+            public string country_registered { get; set; }
+            public string legal_authority { get; set; }
+            public string registration_number { get; set; }
         }
 
         public class Links
