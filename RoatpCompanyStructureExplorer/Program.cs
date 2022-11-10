@@ -23,6 +23,9 @@ namespace RoatpCompanyStructureExplorer
 
             using var storageService = new StorageService();
 
+            var loggingService = new LoggingService();
+            await loggingService.Log($"RoatpCompanyStructureExplorer running {DateTime.UtcNow}");
+
             var providerService = new RoatpService();
             var providers = providerService.GetProviders();
 
@@ -129,11 +132,11 @@ namespace RoatpCompanyStructureExplorer
                                 if (queue.HasProcessed(item.identification.registration_number,
                                         company.RootCompanyNumber ?? company.CompanyNumber))
                                 {
-                                    Console.WriteLine($"Duplicate {item.identification.registration_number} detected ");
+                                    await loggingService.Log($"Duplicate {item.identification.registration_number} detected ");
                                     continue;
                                 }
 
-                                Console.Write($"Adding company {item.identification.registration_number} as parent (psc) of {company.CompanyNumber}");
+                                await loggingService.Log($"Adding company {item.identification.registration_number} as parent (psc) of {company.CompanyNumber}");
 
                                 queue.Add(new QueueItem(item.identification.registration_number, company.Ukprn,
                                     company.RootCompanyNumber ?? company.CompanyNumber, company.CompanyNumber,
@@ -141,7 +144,7 @@ namespace RoatpCompanyStructureExplorer
                             }
                             else if (item.kind != "legal-person-person-with-significant-control")
                             {
-                                Console.WriteLine($"Empty registration number: {company.CompanyNumber} : {item.kind}");
+                                await loggingService.Log($"Empty registration number: {company.CompanyNumber} : {item.kind}");
                             }
                         }
                     }
@@ -158,11 +161,11 @@ namespace RoatpCompanyStructureExplorer
                                 if (queue.HasProcessed(item.identification.registration_number,
                                         company.RootCompanyNumber ?? company.CompanyNumber))
                                 {
-                                    Console.WriteLine($"Duplicate {item.identification.registration_number} detected ");
+                                    await loggingService.Log($"Duplicate {item.identification.registration_number} detected, provider {company.Ukprn}");
                                     continue;
                                 }
 
-                                Console.Write($"Adding company {item.identification.registration_number} as parent (officer) of {company.CompanyNumber}");
+                                await loggingService.Log($"Adding company {item.identification.registration_number} as parent (officer) of {company.CompanyNumber}");
 
                                 queue.Add(new QueueItem(item.identification.registration_number, company.Ukprn,
                                     company.RootCompanyNumber ?? company.CompanyNumber, company.CompanyNumber,
