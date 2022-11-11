@@ -103,6 +103,7 @@ namespace RoatpCompanyStructureExplorer
 
                 if (profile.company_status != "active")
                 {
+                    await loggingService.Log($"Company {company.CompanyName} ({company.CompanyNumber}) status {profile.company_status} will not be stored");
                     continue;
                 }
 
@@ -138,7 +139,7 @@ namespace RoatpCompanyStructureExplorer
 
                                 await loggingService.Log($"Adding company {item.identification.registration_number} as parent (psc) of {company.CompanyNumber}");
 
-                                queue.Add(new QueueItem(item.identification.registration_number, company.Ukprn,
+                                queue.Add(new QueueItem(item.identification.registration_number.ToUpper(), company.Ukprn,
                                     company.RootCompanyNumber ?? company.CompanyNumber, company.CompanyNumber,
                                     item.name));
                             }
@@ -167,7 +168,7 @@ namespace RoatpCompanyStructureExplorer
 
                                 await loggingService.Log($"Adding company {item.identification.registration_number} as parent (officer) of {company.CompanyNumber}");
 
-                                queue.Add(new QueueItem(item.identification.registration_number, company.Ukprn,
+                                queue.Add(new QueueItem(item.identification.registration_number.ToUpper(), company.Ukprn,
                                     company.RootCompanyNumber ?? company.CompanyNumber, company.CompanyNumber,
                                     item.name));
                             }

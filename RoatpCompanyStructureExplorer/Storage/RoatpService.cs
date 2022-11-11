@@ -26,7 +26,7 @@ namespace RoatpCompanyStructureExplorer.Storage
                 result.Add(new RoatpProvider
                 {
                     Ukprn = splitData[0],
-                    CompanyNumber = splitData[1],
+                    CompanyNumber = splitData[1].ToUpper(),
                     Name = splitData[2]
                 });
 
